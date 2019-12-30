@@ -1,0 +1,16 @@
+{
+	"id" : "RingDoorbell",
+	"name" : "Ring.com Doorbell",
+	"description" : "Plugin Index Compteur",
+	"licence" : "AGPL",
+	"author" : "Thierry",
+	"require" : "3.2",
+	"category" : "devicecommunication",
+	"hasDependency" : false,
+	"hasOwnDeamon" : false,
+	"maxDependancyInstallTime" : 0,
+	"changelog" : "",
+	"documentation" : "",
+	"language" : ["fr_FR"],
+	"compatibility" : ["miniplus","smart","rpi","docker","diy"]
+}
