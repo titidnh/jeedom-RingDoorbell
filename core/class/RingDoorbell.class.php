@@ -47,6 +47,17 @@ class RingDoorbell extends eqLogic {
             $values = explode('||', $doorbell);
             if(count($values) == 3){
                 log::add(__CLASS__, 'debug', "Ring doorbell: ".$doorbell);
+                $eqLogic = eqLogic::byLogicalId($values[0], 'RingDoorbell');
+                if (!is_object($eqLogic)) {
+                    $eqLogic = new RingDoorbell();
+                    $eqLogic->setLogicalId($values[0]);
+                    $eqLogic->setIsEnable(1);
+                    $eqLogic->setCategory('other', 1);
+                    $eqLogic->setIsVisible(1);
+                }
+
+                $eqLogic->setName($values[2]);
+                $eqLogic->save();
             }
         }
     }
