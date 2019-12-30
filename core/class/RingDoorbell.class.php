@@ -52,12 +52,12 @@ class RingDoorbell extends eqLogic {
                     $eqLogic = new RingDoorbell();
                     $eqLogic->setLogicalId($values[0]);
                     $eqLogic->setIsEnable(1);
-                    $eqLogic->setCategory('other', 1);
+                    $eqLogic->setCategory('security', 1);
                     $eqLogic->setIsVisible(1);
+                    $eqLogic->setEqType_name('RingDoorbell');
+                    $eqLogic->setName($values[2]);
+                    $eqLogic->save();
                 }
-
-                $eqLogic->setName($values[2]);
-                $eqLogic->save();
             }
         }
     }

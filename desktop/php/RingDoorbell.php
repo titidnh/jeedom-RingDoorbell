@@ -93,22 +93,6 @@ foreach (jeeObject::all() as $object) {
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
 		</div>
 	</div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label">{{TypeCompteur}}</label>
-        <div class="col-sm-2">
-            <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="typeCompteur">
-                <option value="Eau">{{Eau}}</option>
-                <option value="Gaz">{{Gaz}}</option>
-                <option value="Electricite">{{Electricité}}</option>
-            </select>
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label">{{Index de référence}}</label>
-        <div class="col-sm-3">
-            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="lastIndex"/>
-        </div>
-    </div>
 </fieldset>
 </form>
 </div>
