@@ -44,3 +44,24 @@ if (!isConnect()) {
     </div>
   </fieldset>
 </form>
+
+<script>
+$('#bt_syncWithRing').on('click', function () {
+  $.ajax({
+      type: "POST",
+      url: "plugins/RingDoorbell/core/ajax/RingDoorbell.ajax.php",
+      data: { action: "syncWithRing" },
+      dataType: 'json',
+      error: function (request, status, error) {
+        handleAjaxError(request, status, error);
+      },
+      success: function (data) {
+        if (data.state != 'ok') {
+          $('#div_alert').showAlert({message: data.result, level: 'danger'});
+            return;
+        }
+        $('#div_alert').showAlert({message: '{{Synchronisation réussie}}', level: 'success'});
+      }
+  });
+});
+</script>

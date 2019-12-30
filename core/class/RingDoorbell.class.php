@@ -36,6 +36,14 @@ class RingDoorbell extends eqLogic {
         log::remove(__CLASS__ . '_update');
         return array('script' => dirname(__FILE__) . '/../../resources/install.sh ' . jeedom::getTmpFolder('RingDoorbell') . '/dependance', 'log' => log::getPathToLog(__CLASS__ . '_update'));
     }
+
+    public static function syncWithRing() {
+
+    }
+
+    public static function cron5() {
+
+    }
 }
 
 class RingDoorbellCmd extends cmd {
