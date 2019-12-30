@@ -25,7 +25,7 @@ class RingDoorbell extends eqLogic {
         $return['log'] = __CLASS__ . '_update';
         $return['progress_file'] = jeedom::getTmpFolder('RingDoorbell') . '/dependance';
         $return['state'] = 'ok';
-        if (exec('pip3 list | grep ring_doorbell | wc -l'))
+        if (exec('pip3 list | grep ring_doorbell | wc -l') == 0)
         {
             $return['state'] = 'nok';
         }

@@ -8,7 +8,7 @@
 	"category" : "devicecommunication",
 	"hasDependency" : true,
 	"hasOwnDeamon" : false,
-	"maxDependancyInstallTime" : 0,
+	"maxDependancyInstallTime" : 60,
 	"changelog" : "",
 	"documentation" : "",
 	"language" : ["fr_FR"],
