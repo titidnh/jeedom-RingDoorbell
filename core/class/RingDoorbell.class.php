@@ -32,14 +32,21 @@ class RingDoorbell extends eqLogic {
 
         return $return;
     }
-    
+
     public static function dependancy_install() {
         log::remove(__CLASS__ . '_update');
         return array('script' => dirname(__FILE__) . '/../../resources/install.sh ' . jeedom::getTmpFolder('RingDoorbell') . '/dependance', 'log' => log::getPathToLog(__CLASS__ . '_update'));
     }
 
     public static function syncWithRing() {
-
+        log::add(__CLASS__, 'debug', "Sync with Ring.com started.");
+        $result = shell_exec('sudo python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellSync.py -u '. config::byKey('username', 'RingDoorbell') .' -p '''. config::byKey('password', 'RingDoorbell').'''');
+        log::add(__CLASS__, 'debug', "Values received from Ring: ".$result);
+        $splittedDoorbells = explode(PHP_EOL, $result);
+        foreach ($splittedDoorbells as $doorbell) {
+            log::add(__CLASS__, 'debug', "Ring doorbell: ".$doorbell);
+            $values = explode('||', $doorbell);
+        }
     }
 
     public static function cron5() {
