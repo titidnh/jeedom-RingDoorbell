@@ -65,11 +65,21 @@ class RingDoorbell extends eqLogic {
     public static function cron15() {
         log::add(__CLASS__, 'debug', "Ring.com cron started.");
         $result = shell_exec('sudo python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellUpdate.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
-        log::add(__CLASS__, 'debug', "Ring.com cron result: .".$result);
+    //    log::add(__CLASS__, 'debug', "Ring.com cron result: .".$result);
+        $splittedEvents = explode(PHP_EOL, $result);
+
         foreach (self::byType('RingDoorbell') as $eqLogic)
         {
             if ($eqLogic->getIsEnable() == 1)
             {
+                //$events = array();
+                foreach ($splittedEvents as $event) {
+                    $values = explode('||', $event);
+                    if($eqLogic->getLogicalId() == $values[0]){
+                        log::add(__CLASS__, 'debug', "Ring.com cron filtering: .".$event);
+                    }
+                    // print(str(doorbell.id)+'||'+str(event['id'])+'||'+str(event['kind'])+'||'+str(event['answered'])+'||'+str(event['created_at']))
+                }
             }
         }
 
