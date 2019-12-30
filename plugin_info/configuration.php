@@ -23,6 +23,24 @@ if (!isConnect()) {
 }
 ?>
 <form class="form-horizontal">
-    <fieldset>
+  <fieldset>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">{{Nom d'utilisateur}}</label>
+      <div class="col-sm-3">
+        <input type="text" class="configKey form-control" data-l1key="username" placeholder="Nom d'utilisateur"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-sm-2 control-label">{{Mot de passe}}</label>
+      <div class="col-sm-3">
+        <input type="password" class="configKey form-control" data-l1key="password" placeholder="Mot de passe"/>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="col-lg-2 control-label">{{Synchroniser}}</label>
+      <div class="col-lg-2">
+        <a class="btn btn-warning" id="bt_syncWithRing"><i class="fas fa-sync"></i> {{Synchroniser mes équipements}}</a>
+      </div>
+    </div>
   </fieldset>
 </form>
