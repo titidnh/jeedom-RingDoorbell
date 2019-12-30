@@ -32,6 +32,7 @@ class RingDoorbell extends eqLogic {
 
         return $return;
     }
+    
     public static function dependancy_install() {
         log::remove(__CLASS__ . '_update');
         return array('script' => dirname(__FILE__) . '/../../resources/install.sh ' . jeedom::getTmpFolder('RingDoorbell') . '/dependance', 'log' => log::getPathToLog(__CLASS__ . '_update'));
