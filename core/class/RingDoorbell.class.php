@@ -40,12 +40,14 @@ class RingDoorbell extends eqLogic {
 
     public static function syncWithRing() {
         log::add(__CLASS__, 'debug', "Sync with Ring.com started.");
-        $result = shell_exec('sudo python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellSync.py -u '. config::byKey('username', 'RingDoorbell') .' -p '''. config::byKey('password', 'RingDoorbell').'''');
+        $result = shell_exec('sudo python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellSync.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
         log::add(__CLASS__, 'debug', "Values received from Ring: ".$result);
         $splittedDoorbells = explode(PHP_EOL, $result);
         foreach ($splittedDoorbells as $doorbell) {
-            log::add(__CLASS__, 'debug', "Ring doorbell: ".$doorbell);
             $values = explode('||', $doorbell);
+            if(count($values) == 3){
+                log::add(__CLASS__, 'debug', "Ring doorbell: ".$doorbell);
+            }
         }
     }
 
