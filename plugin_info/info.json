@@ -6,7 +6,7 @@
 	"author" : "Thierry",
 	"require" : "3.2",
 	"category" : "devicecommunication",
-	"hasDependency" : false,
+	"hasDependency" : true,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
 	"changelog" : "",

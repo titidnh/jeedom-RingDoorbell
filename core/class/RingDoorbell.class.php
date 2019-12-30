@@ -20,6 +20,22 @@
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
 class RingDoorbell extends eqLogic {
+    public static function dependancy_info() {
+        $return = array();
+        $return['log'] = __CLASS__ . '_update';
+        $return['progress_file'] = jeedom::getTmpFolder('RingDoorbell') . '/dependance';
+        $return['state'] = 'ok';
+        if (exec('pip3 list | grep ring_doorbell | wc -l'))
+        {
+            $return['state'] = 'nok';
+        }
+
+        return $return;
+    }
+    public static function dependancy_install() {
+        log::remove(__CLASS__ . '_update');
+        return array('script' => dirname(__FILE__) . '/../../resources/install.sh ' . jeedom::getTmpFolder('RingDoorbell') . '/dependance', 'log' => log::getPathToLog(__CLASS__ . '_update'));
+    }
 }
 
 class RingDoorbellCmd extends cmd {
