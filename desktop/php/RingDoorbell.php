@@ -2,7 +2,7 @@
 if (!isConnect('admin')) {
 	throw new Exception('{{401 - Accès non autorisé}}');
 }
-$plugin = plugin::byId('MesIndexCompteur');
+$plugin = plugin::byId('RingDoorbell');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 ?>
@@ -129,5 +129,5 @@ foreach (jeeObject::all() as $object) {
 </div>
 </div>
 
-<?php include_file('desktop', 'MesIndexCompteur', 'js', 'MesIndexCompteur');?>
+<?php include_file('desktop', 'RingDoorbell', 'js', 'RingDoorbell');?>
 <?php include_file('core', 'plugin.template', 'js');?>

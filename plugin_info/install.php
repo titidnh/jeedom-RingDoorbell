@@ -18,16 +18,16 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
-function MesIndexCompteur_install() {
+function RingDoorbell_install() {
     
 }
 
-function MesIndexCompteur_update() {
+function RingDoorbell_update() {
     
 }
 
 
-function MesIndexCompteur_remove() {
+function RingDoorbell_remove() {
     
 }
 
