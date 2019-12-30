@@ -40,7 +40,7 @@ class RingDoorbell extends eqLogic {
 
     public static function syncWithRing() {
         log::add(__CLASS__, 'debug', "Sync with Ring.com started.");
-        $result = shell_exec('sudo python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellSync.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
+        $result = shell_exec('sudo -H python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellSync.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
         log::add(__CLASS__, 'debug', "Values received from Ring: ".$result);
         $splittedDoorbells = explode(PHP_EOL, $result);
         foreach ($splittedDoorbells as $doorbell) {
@@ -64,7 +64,7 @@ class RingDoorbell extends eqLogic {
 
     public static function cron15() {
         log::add(__CLASS__, 'debug', "Ring.com cron started.");
-        $result = shell_exec('sudo python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellUpdate.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
+        $result = shell_exec('sudo -H python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellUpdate.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
     //    log::add(__CLASS__, 'debug', "Ring.com cron result: .".$result);
         $splittedEvents = explode(PHP_EOL, $result);
 
