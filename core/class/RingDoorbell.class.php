@@ -72,14 +72,17 @@ class RingDoorbell extends eqLogic {
         {
             if ($eqLogic->getIsEnable() == 1)
             {
-                //$events = array();
+                $events = array();
                 foreach ($splittedEvents as $event) {
                     $values = explode('||', $event);
                     if($eqLogic->getLogicalId() == $values[0]){
-                        log::add(__CLASS__, 'debug', "Ring.com cron filtering: .".$event);
+                        $events.push($event);
                     }
                     // print(str(doorbell.id)+'||'+str(event['id'])+'||'+str(event['kind'])+'||'+str(event['answered'])+'||'+str(event['created_at']))
                 }
+
+                log::add(__CLASS__, 'debug', 'Ring.com cron set to cache: '.print_r($events));
+                $eqLogic->setConfiguration('RingDoorbellHistoricalData', $events);
             }
         }
 
