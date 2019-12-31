@@ -1,19 +1,12 @@
-<div class="eqLogic eqLogic-widget allowResize allowReorderCmd #custom_layout# #eqLogic_class#" data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#" style="width: #width#;height: #height#;#styl$
-        <center class="widget-name">
-                <a href="#eqLink#" class="reportModeHidden">#name_display# <span style="font-size: 0.85em;" class="object_name">#object_name#</span></a>
+<div class="eqLogic eqLogic-widget allowResize allowReorderCmd #custom_layout# #eqLogic_class#" data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#" style="width: #width#;height: #height#;#style#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#">
+	<center class="widget-name">
+		<a href="#eqLink#" class="reportModeHidden">#name_display# <span style="font-size: 0.85em;" class="object_name">#object_name#</span></a>
     </center>
     <input type="hidden" id="#id#RingValue" value="#RingDoorbellHistoricalData#"/>
-        <div class="#isVerticalAlign#" id="#id#RingRendering">
-        </div>
+	<div class="#isVerticalAlign#" id="#id#RingRendering">
+	</div>
     <script type="text/javascript">
         $(function() {
-            var currentdate = new Date();
-            var datetime = "Last Sync: " + currentdate.getDate() + "/"
-                    + (currentdate.getMonth()+1)  + "/"
-                    + currentdate.getFullYear() + " @ "
-                    + currentdate.getHours() + ":"
-                    + currentdate.getMinutes() + ":"
-                    + currentdate.getSeconds();
             var value = $("##id#RingValue").val();
             arrayOfEvents = value.split(/\r?\n/).sort().reverse();
             var display = '';
@@ -21,12 +14,12 @@
                 var event = arrayOfEvents[i].split('|');
                 var eventDate = new Date(event[0]);
                 var isDing = event[1] === "ding";
-                var answered = event[2] !== "0";
+                var answered = event[2] !== "1";
                 var eventDateAsString = eventDate.getDate() + "/" + (eventDate.getMonth()+1)  + "/" + eventDate.getFullYear() + " " + eventDate.getHours() + ":" + eventDate.getMinutes() + ":" + eventDate.getSeconds();
-                display += "<li>" + eventDateAsString + event[2] + "</li>";
+                display += "<li>" + (isDing == true ? "(D) " : "(M) ") + eventDateAsString + "</li>";
             }
 
-            $("##id#RingRendering").html(datetime + " - "+ "<ul>"+ display + "</ul>");
+            $("##id#RingRendering").html("<ul style=\"list-style: none; padding-left: 0;\">"+ display + "</ul>");
         });
     </script>
 </div>
