@@ -28,7 +28,7 @@ try {
 
     if (init('action') == 'syncWithRing') {
         RingDoorbell::syncWithRing();
-        RingDoorbell::cron15();
+        RingDoorbell::cron5();
         ajax::success();
     }
 
