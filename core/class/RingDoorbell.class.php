@@ -71,6 +71,7 @@ class RingDoorbell extends eqLogic {
         {
             if ($eqLogic->getIsEnable() == 1)
             {
+                log::add(__CLASS__, 'debug', "Ring.com old persisted data: ". $eqLogic->getConfiguration('RingDoorbellHistoricalData'));   
                 $events = array();
                 foreach ($splittedEvents as $event) {
                     $values = explode('||', $event);
@@ -80,7 +81,8 @@ class RingDoorbell extends eqLogic {
                     // print(str(doorbell.id)+'||'+str(event['id'])+'||'+str(event['kind'])+'||'+str(event['answered'])+'||'+str(event['created_at']))
                 }
 
-                $eqLogic->setConfiguration('RingDoorbellHistoricalData', $events);
+                $eqLogic->setConfiguration('RingDoorbellHistoricalData', implode(PHP_EOL, $events));
+                $eqLogic->save();
             }
         }
 
