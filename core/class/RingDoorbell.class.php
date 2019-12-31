@@ -93,22 +93,14 @@ class RingDoorbell extends eqLogic {
     }
 
     public function toHtml($_version = 'dashboard') {
-		$replace = $this->preToHtml($_version);
-		if (!is_array($replace)) {
-			return $replace;
-		}
-
-		// foreach ($this->getCmd('info') as $cmd) {
-		// 	$replace['#' . $cmd->getLogicalId() . '_history#'] = '';
-		// 	$replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
-		// 	$replace['#' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
-		// 	$replace['#' . $cmd->getLogicalId() . '_collect#'] = $cmd->getCollectDate();
-		// 	if ($cmd->getIsHistorized() == 1) {
-		// 		$replace['#' . $cmd->getLogicalId() . '_history#'] = 'history cursor';
-		// 	}
-        // }
-        
-		return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'eqlogic', 'RingDoorbell')));
+        $replace = $this->preToHtml($_version);
+        if (!is_array($replace)) {
+            log::add(__CLASS__, 'debug', 'Not array');
+            return $replace;
+        }
+        $version = jeedom::versionAlias($_version);
+     	$html = template_replace($replace, getTemplate('core', $version, 'eqlogic', 'RingDoorbell'));
+     	return $html;
 	}
 }
 
