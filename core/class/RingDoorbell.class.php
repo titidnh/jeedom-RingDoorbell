@@ -91,7 +91,7 @@ class RingDoorbell extends eqLogic {
                 foreach ($splittedEvents as $event) {
                     $values = explode('||', $event);
                     if($eqLogic->getLogicalId() == $values[0]){
-                        array_push($events, $values[2].';'.$values[3].';'.$values[4]);
+                        array_push($events, $values[4].'|'.$values[2].'|'.$values[3]);
                     }
                 }
 
