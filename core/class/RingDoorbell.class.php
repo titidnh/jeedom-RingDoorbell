@@ -79,9 +79,8 @@ class RingDoorbell extends eqLogic {
                 foreach ($splittedEvents as $event) {
                     $values = explode('||', $event);
                     if($eqLogic->getLogicalId() == $values[0]){
-                        array_push($events, $event);
+                        array_push($events, $values[2].';'.$values[3].';'.$values[4]);
                     }
-                    // print(str(doorbell.id)+'||'+str(event['id'])+'||'+str(event['kind'])+'||'+str(event['answered'])+'||'+str(event['created_at']))
                 }
 
                 $eqLogic->setConfiguration('RingDoorbellHistoricalData', implode(PHP_EOL, $events));
