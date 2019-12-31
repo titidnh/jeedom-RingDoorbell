@@ -20,6 +20,9 @@
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
 class RingDoorbell extends eqLogic {
+
+    public static $_widgetPossibility = array('custom' => true);
+
     public static function dependancy_info() {
         $return = array();
         $return['log'] = __CLASS__ . '_update';
@@ -88,6 +91,25 @@ class RingDoorbell extends eqLogic {
 
         log::add(__CLASS__, 'debug', "Ring.com cron ended.");
     }
+
+    public function toHtml($_version = 'dashboard') {
+		$replace = $this->preToHtml($_version);
+		if (!is_array($replace)) {
+			return $replace;
+		}
+
+		// foreach ($this->getCmd('info') as $cmd) {
+		// 	$replace['#' . $cmd->getLogicalId() . '_history#'] = '';
+		// 	$replace['#' . $cmd->getLogicalId() . '_id#'] = $cmd->getId();
+		// 	$replace['#' . $cmd->getLogicalId() . '#'] = $cmd->execCmd();
+		// 	$replace['#' . $cmd->getLogicalId() . '_collect#'] = $cmd->getCollectDate();
+		// 	if ($cmd->getIsHistorized() == 1) {
+		// 		$replace['#' . $cmd->getLogicalId() . '_history#'] = 'history cursor';
+		// 	}
+        // }
+        
+		return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'eqlogic', 'RingDoorbell')));
+	}
 }
 
 class RingDoorbellCmd extends cmd {
