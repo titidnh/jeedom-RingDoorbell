@@ -99,6 +99,7 @@ class RingDoorbell extends eqLogic {
             return $replace;
         }
         $version = jeedom::versionAlias($_version);
+        replace['#RingDoorbellHistoricalData#'] = $eqLogic->getConfiguration('RingDoorbellHistoricalData');
      	$html = template_replace($replace, getTemplate('core', $version, 'eqlogic', 'RingDoorbell'));
      	return $html;
 	}
