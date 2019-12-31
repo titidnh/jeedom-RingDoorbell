@@ -1,10 +1,15 @@
 <div class="eqLogic eqLogic-widget allowResize allowReorderCmd #custom_layout# #eqLogic_class#" data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#" style="width: #width#;height: #height#;#style#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#">
 	<center class="widget-name">
 		<a href="#eqLink#" class="reportModeHidden">#name_display# <span style="font-size: 0.85em;" class="object_name">#object_name#</span></a>
-	</center>
-	<div class="#isVerticalAlign#">
-        #RingDoorbellHistoricalData#
+    </center>
+    <input type="hidden" id="#id#RingValue" value="#RingDoorbellHistoricalData#"/>
+	<div class="#isVerticalAlign#" id="#id#RingRendering">
 	</div>
     <script type="text/javascript">
+    $(function() {
+        var value = $("##id#RingValue").val();
+        alert(value);
+        $("##id#RingRendering").text(value);
+    });
     </script>
 </div>
