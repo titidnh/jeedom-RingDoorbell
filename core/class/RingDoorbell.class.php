@@ -61,6 +61,18 @@ class RingDoorbell extends eqLogic {
                     $eqLogic->setName($values[2]);
                     $eqLogic->save();
                 }
+
+                $refresh = $eqLogic->getCmd(null, 'Ding');
+                if (!is_object($refresh)) {
+                    $refresh = new RingDoorbellCmd();
+                    $refresh->setName(__('Ding', __FILE__));
+                }
+                
+                $refresh->setEqLogic_id($eqLogic->getId());
+                $refresh->setLogicalId('Ding');
+                $refresh->setType('action');
+                $refresh->setSubType('other');
+                $refresh->save();
             }
         }
     }
@@ -85,6 +97,7 @@ class RingDoorbell extends eqLogic {
 
                 $eqLogic->setConfiguration('RingDoorbellHistoricalData', implode(PHP_EOL, $events));
                 $eqLogic->save();
+                $eqLogic->refresh();
             }
         }
 
