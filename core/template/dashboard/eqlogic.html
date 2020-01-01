@@ -20,11 +20,11 @@
                 var imgAlt = 'Motion';
                 if(isDing === true)
                 {
-                    imgSrc = 'motion.png';
-                    imgAlt = 'greenbell.png';
+                    imgSrc = 'greenbell.png';
+                    imgAlt = 'Ding';
                 }
 
-                display += "<li><img src=\"assets/"+imgSrc+"\" alt=\""+imgAlt+"\"><div> " + eventDateAsString + "</div></li>";
+                display += "<li><img src=\"plugins/RingDoorbell/core/template/dashboard/assets/"+imgSrc+"\" alt=\""+imgAlt+"\"><div> " + eventDateAsString + "</div></li>";
             }
 
             $("##id#RingRendering").html("<ul style=\"list-style: none; padding-left: 0;\">"+ display + "</ul>");
