@@ -15,7 +15,7 @@
                 var eventDate = new Date(event[0]);
                 var isDing = event[1] === "ding";
                 var answered = event[2] !== "1";
-                var eventDateAsString = eventDate.getDate() + "/" + (eventDate.getMonth()+1)  + "/" + eventDate.getFullYear() + " " + eventDate.getHours() + ":" + eventDate.getMinutes() + ":" + eventDate.getSeconds();
+                var eventDateAsString = eventDate.getDate().toString().padStart(2, '0') + "/" + (eventDate.getMonth()+1).toString().padStart(2, '0')  + "/" + eventDate.getFullYear().toString().padStart(4, '0') + " " + eventDate.getHours().toString().padStart(2, '0') + ":" + eventDate.getMinutes().toString().padStart(2, '0') + ":" + eventDate.getSeconds().toString().padStart(2, '0');
                 display += "<li>" + (isDing == true ? "(D) " : "(M) ") + eventDateAsString + "</li>";
             }
 
