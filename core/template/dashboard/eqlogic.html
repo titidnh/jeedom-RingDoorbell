@@ -16,7 +16,15 @@
                 var isDing = event[1] === "ding";
                 var answered = event[2] !== "1";
                 var eventDateAsString = eventDate.getDate().toString().padStart(2, '0') + "/" + (eventDate.getMonth()+1).toString().padStart(2, '0')  + "/" + eventDate.getFullYear().toString().padStart(4, '0') + " " + eventDate.getHours().toString().padStart(2, '0') + ":" + eventDate.getMinutes().toString().padStart(2, '0') + ":" + eventDate.getSeconds().toString().padStart(2, '0');
-                display += "<li>" + (isDing == true ? "(D) " : "(M) ") + eventDateAsString + "</li>";
+                var imgSrc = 'motion.png';
+                var imgAlt = 'Motion';
+                if(isDing === true)
+                {
+                    imgSrc = 'motion.png';
+                    imgAlt = 'greenbell.png';
+                }
+
+                display += "<li><img src=\"assets/"+imgSrc+"\" alt=\""+imgAlt+"\"><div> " + eventDateAsString + "</div></li>";
             }
 
             $("##id#RingRendering").html("<ul style=\"list-style: none; padding-left: 0;\">"+ display + "</ul>");
