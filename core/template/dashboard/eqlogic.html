@@ -1,10 +1,10 @@
 <div class="eqLogic eqLogic-widget allowResize allowReorderCmd #custom_layout# #eqLogic_class#" data-eqType="#eqType#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#" style="width: #width#;height: #height#;#style#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#">
-	<center class="widget-name">
-		<a href="#eqLink#" class="reportModeHidden">#name_display# <span style="font-size: 0.85em;" class="object_name">#object_name#</span></a>
+    <center class="widget-name">
+                <a href="#eqLink#" class="reportModeHidden">#name_display# <span style="font-size: 0.85em;" class="object_name">#object_name#</span></a>
     </center>
     <input type="hidden" id="#id#RingValue" value="#RingDoorbellHistoricalData#"/>
-	<div class="#isVerticalAlign#" id="#id#RingRendering">
-	</div>
+    <div class="#isVerticalAlign#" id="#id#RingRendering">
+    </div>
     <script type="text/javascript">
         $(function() {
             var value = $("##id#RingValue").val();
@@ -14,12 +14,20 @@
                 var event = arrayOfEvents[i].split('|');
                 var eventDate = new Date(event[0]);
                 var isDing = event[1] === "ding";
-                var answered = event[2] !== "1";
-                var eventDateAsString = eventDate.getDate() + "/" + (eventDate.getMonth()+1)  + "/" + eventDate.getFullYear() + " " + eventDate.getHours() + ":" + eventDate.getMinutes() + ":" + eventDate.getSeconds();
-                display += "<li>" + (isDing == true ? "(D) " : "(M) ") + eventDateAsString + "</li>";
+                var answered = event[2] === "1";
+                var eventDateAsString = eventDate.getDate().toString().padStart(2, '0') + "/" + (eventDate.getMonth()+1).toString().padStart(2, '0')  + "/" + eventDate.getFullYear().toString().padStart(4, '0') + " " + eventDate.getHours().toString().padStart(2, '0') + ":" + eventDate.getMinutes().toString().padStart(2, '0') + ":" + eventDate.getSeconds().toString().padStart(2, '0');
+                var imgSrc = 'motion.png';
+                var imgAlt = 'Motion';
+                if(isDing === true)
+                {
+                    imgSrc = answered === true ? 'greenbell.png' : 'redbell.png';
+                    imgAlt = 'Ding';
+                }
+
+                display += "<div><img style=\"height:16px;width:16px;float: left;padding-top:5px;\" src=\"plugins/RingDoorbell/core/template/dashboard/assets/"+imgSrc+"\" alt=\""+imgAlt+"\"><div style=\"\"> " + eventDateAsString + "</div></div>";
             }
 
-            $("##id#RingRendering").html("<ul style=\"list-style: none; padding-left: 0;\">"+ display + "</ul>");
+            $("##id#RingRendering").html(display);
         });
     </script>
 </div>
