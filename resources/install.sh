@@ -13,7 +13,7 @@ apt-get install -y python3-pip python3
 echo 60 > ${PROGRESS_FILE}
 pip3 install --upgrade pip
 echo 80 > ${PROGRESS_FILE}
-pip3 install --upgrade ring_doorbell
+pip3 install --upgrade ring-doorbell
 echo 100 > ${PROGRESS_FILE}
 rm ${PROGRESS_FILE}
 echo "********************************************************"
