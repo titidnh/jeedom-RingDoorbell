@@ -62,23 +62,34 @@ class RingDoorbell extends eqLogic {
                     $eqLogic->save();
                 }
 
-                $refresh = $eqLogic->getCmd(null, 'Ding');
-                if (!is_object($refresh)) {
-                    $refresh = new RingDoorbellCmd();
-                    $refresh->setName(__('Ding', __FILE__));
+                $ringCmd = $eqLogic->getCmd(null, 'Ring');
+                if (!is_object($ringCmd)) {
+                    $ringCmd = new RingDoorbellCmd();
+                    $ringCmd->setName(__('Ring', __FILE__));
                 }
                 
-                $refresh->setEqLogic_id($eqLogic->getId());
-                $refresh->setLogicalId('Ding');
-                $refresh->setType('action');
-                $refresh->setSubType('other');
-                $refresh->save();
+                $ringCmd->setEqLogic_id($eqLogic->getId());
+                $ringCmd->setLogicalId('Ring');
+                $ringCmd->setType('action');
+                $ringCmd->setSubType('other');
+                $ringCmd->save();
+
+                $motionCmd = $eqLogic->getCmd(null, 'Motion');
+                if (!is_object($motionCmd)) {
+                    $motionCmd = new RingDoorbellCmd();
+                    $motionCmd->setName(__('Motion', __FILE__));
+                }
+                
+                $motionCmd->setEqLogic_id($eqLogic->getId());
+                $motionCmd->setLogicalId('Motion');
+                $motionCmd->setType('action');
+                $motionCmd->setSubType('other');
+                $motionCmd->save();
             }
         }
     }
 
-    public static function cron5() {
-        log::add(__CLASS__, 'debug', "Ring.com cron started.");
+    public static function refreshData(){
         $result = shell_exec('sudo -H python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellUpdate.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
         $splittedEvents = explode(PHP_EOL, $result);
 
@@ -102,6 +113,14 @@ class RingDoorbell extends eqLogic {
                 $eqLogic->refreshWidget();
             }
         }
+    }
+
+    public static function cron5() {
+        log::add(__CLASS__, 'debug', "Ring.com cron started.");
+        if(config::byKey('useIFTT', 'RingDoorbell') != "1")
+        {
+            RingDoorbell::refreshData();
+        }
 
         log::add(__CLASS__, 'debug', "Ring.com cron ended.");
     }
@@ -121,5 +140,8 @@ class RingDoorbell extends eqLogic {
 
 class RingDoorbellCmd extends cmd {
     public function execute($_options = array()) {
+        if ($this->getLogicalId() == 'Ring' || $this->getLogicalId() == 'Motion') {
+            RingDoorbell::refreshData();
+        }
     }
 }

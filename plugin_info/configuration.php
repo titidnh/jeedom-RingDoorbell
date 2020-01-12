@@ -37,6 +37,12 @@ if (!isConnect()) {
       </div>
     </div>
     <div class="form-group">
+      <label class="col-sm-2 control-label">{{Utilisation de IFTT}}</label>
+      <div class="col-sm-3">
+        <input type="checkbox" class="configKey form-control" data-l1key="useIFTT"/>
+      </div>
+    </div>
+    <div class="form-group">
       <label class="col-lg-2 control-label">{{Synchroniser}}</label>
       <div class="col-lg-2">
         <a class="btn btn-warning" id="bt_syncWithRing"><i class="fas fa-sync"></i> {{Synchroniser mes équipements}}</a>
