@@ -102,7 +102,7 @@ class RingDoorbell extends eqLogic {
                 $motionCmd->save();
                 
                 $motionCmd = $eqLogic->getCmd(null, 'Motion');
-                if (!is_object($ringCmd)) {
+                if (!is_object($motionCmd)) {
                     $motionCmd = new RingDoorbellCmd();
                     $motionCmd->setName(__('Motion', __FILE__));
                 }
