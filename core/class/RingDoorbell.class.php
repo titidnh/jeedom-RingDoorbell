@@ -161,17 +161,17 @@ class RingDoorbell extends eqLogic {
         log::add(__CLASS__, 'debug', "updateInformation ".$type." ".$datetime);
     }
 
-    public function toHtml($_version = 'dashboard') {
-        $replace = $this->preToHtml($_version);
-        if (!is_array($replace)) {
-            log::add(__CLASS__, 'debug', 'Not array');
-            return $replace;
-        }
-        $version = jeedom::versionAlias($_version);
-        $replace['#RingDoorbellHistoricalData#'] = $this->getConfiguration('RingDoorbellHistoricalData');
-     	$html = template_replace($replace, getTemplate('core', $version, 'eqlogic', 'RingDoorbell'));
-     	return $html;
-	}
+    // public function toHtml($_version = 'dashboard') {
+    //     $replace = $this->preToHtml($_version);
+    //     if (!is_array($replace)) {
+    //         log::add(__CLASS__, 'debug', 'Not array');
+    //         return $replace;
+    //     }
+    //     $version = jeedom::versionAlias($_version);
+    //     $replace['#RingDoorbellHistoricalData#'] = $this->getConfiguration('RingDoorbellHistoricalData');
+    //  	$html = template_replace($replace, getTemplate('core', $version, 'eqlogic', 'RingDoorbell'));
+    //  	return $html;
+	// }
 }
 
 class RingDoorbellCmd extends cmd {
