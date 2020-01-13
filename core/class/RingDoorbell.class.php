@@ -173,8 +173,7 @@ class RingDoorbell extends eqLogic {
                 $eqLogic->save();
                 log::add(__CLASS__, 'debug', "New value");
                 $motionCmd = $eqLogic->getCmd(null, 'Motion');
-                $motionCmd->setCollectDate($datetime);
-                $motionCmd->event(1);
+                $motionCmd->addHistoryValue(1, $datetime);
             }
         }
 
