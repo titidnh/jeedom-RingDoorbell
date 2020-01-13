@@ -62,6 +62,19 @@ class RingDoorbell extends eqLogic {
                     $eqLogic->save();
                 }
 
+                $ringCmd = $eqLogic->getCmd(null, 'RingAction');
+                if (!is_object($ringCmd)) {
+                    $ringCmd = new RingDoorbellCmd();
+                    $ringCmd->setName(__('RingAction', __FILE__));
+                }
+                
+                $ringCmd->setEqLogic_id($eqLogic->getId());
+                $ringCmd->setLogicalId('RingAction');
+                $ringCmd->setType('action');
+                $ringCmd->setSubType('other');
+                $ringCmd->setIsVisible(0);
+                $ringCmd->save();
+
                 $ringCmd = $eqLogic->getCmd(null, 'Ring');
                 if (!is_object($ringCmd)) {
                     $ringCmd = new RingDoorbellCmd();
@@ -70,20 +83,35 @@ class RingDoorbell extends eqLogic {
                 
                 $ringCmd->setEqLogic_id($eqLogic->getId());
                 $ringCmd->setLogicalId('Ring');
-                $ringCmd->setType('action');
-                $ringCmd->setSubType('other');
+                $ringCmd->setType('info');
+                $ringCmd->setSubType('boolean');
+                $ringCmd->setIsHistorized(1);
                 $ringCmd->save();
 
-                $motionCmd = $eqLogic->getCmd(null, 'Motion');
+                $motionCmd = $eqLogic->getCmd(null, 'MotionAction');
                 if (!is_object($motionCmd)) {
+                    $motionCmd = new RingDoorbellCmd();
+                    $motionCmd->setName(__('MotionAction', __FILE__));
+                }
+                
+                $motionCmd->setEqLogic_id($eqLogic->getId());
+                $motionCmd->setLogicalId('MotionAction');
+                $motionCmd->setType('action');
+                $motionCmd->setSubType('other');
+                $motionCmd->setIsVisible(0);
+                $motionCmd->save();
+                
+                $motionCmd = $eqLogic->getCmd(null, 'Motion');
+                if (!is_object($ringCmd)) {
                     $motionCmd = new RingDoorbellCmd();
                     $motionCmd->setName(__('Motion', __FILE__));
                 }
                 
                 $motionCmd->setEqLogic_id($eqLogic->getId());
                 $motionCmd->setLogicalId('Motion');
-                $motionCmd->setType('action');
-                $motionCmd->setSubType('other');
+                $motionCmd->setType('info');
+                $motionCmd->setSubType('boolean');
+                $motionCmd->setIsHistorized(1);
                 $motionCmd->save();
             }
         }
