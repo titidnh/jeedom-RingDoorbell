@@ -89,7 +89,8 @@ class RingDoorbell extends eqLogic {
         }
     }
 
-    public static function refreshData() {
+    public static function refreshData() 
+    {
         $result = shell_exec('sudo -H python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellUpdate.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
         $splittedEvents = explode(PHP_EOL, $result);
 
@@ -102,7 +103,7 @@ class RingDoorbell extends eqLogic {
                 foreach ($splittedEvents as $event) {
                     $values = explode('||', $event);
                     if($eqLogic->getLogicalId() == $values[0]) {
-                        updateInformation($eqLogic, $values[4], $values[2]);
+                        RingDoorbell::updateInformation($eqLogic, $values[4], $values[2]);
                         $isAnwsered = $values[3] == "False" ? "0" : "1";
                         array_push($events, $values[4].'|'.$values[2].'|'.$isAnwsered);
                     }
@@ -116,7 +117,8 @@ class RingDoorbell extends eqLogic {
         }
     }
 
-    public static function cron15() {
+    public static function cron15() 
+    {
         log::add(__CLASS__, 'debug', "Ring.com cron started.");
         if(config::byKey('useIFTT', 'RingDoorbell') != "1")
         {
