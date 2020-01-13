@@ -84,7 +84,7 @@ class RingDoorbell extends eqLogic {
                 $ringCmd->setEqLogic_id($eqLogic->getId());
                 $ringCmd->setLogicalId('Ring');
                 $ringCmd->setType('info');
-                $ringCmd->setSubType('boolean');
+                $ringCmd->setSubType('binary');
                 $ringCmd->setIsHistorized(1);
                 $ringCmd->save();
 
@@ -110,7 +110,7 @@ class RingDoorbell extends eqLogic {
                 $motionCmd->setEqLogic_id($eqLogic->getId());
                 $motionCmd->setLogicalId('Motion');
                 $motionCmd->setType('info');
-                $motionCmd->setSubType('boolean');
+                $motionCmd->setSubType('binary');
                 $motionCmd->setIsHistorized(1);
                 $motionCmd->save();
             }
