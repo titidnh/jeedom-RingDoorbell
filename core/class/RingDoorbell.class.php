@@ -137,7 +137,8 @@ class RingDoorbell extends eqLogic {
                     }
                 }
 
-                foreach (sort($events) as $event) 
+                sort($events);
+                foreach ($events as $event) 
                 {
                     $values = explode('|', $event);
                     RingDoorbell::updateInformation($eqLogic, $values[1], $values[0]);   
@@ -163,6 +164,25 @@ class RingDoorbell extends eqLogic {
 
     public static function updateInformation($eqLogic, $type, $datetime)
     {
+        if($type == 'motion')
+        {
+            $latestDateTimeMotion = $eqLogic->getConfiguration('LatestDateTimeMotion');
+            if($datetime > $latestDateTimeMotion)
+            {
+                $eqLogic->setConfiguration('LatestDateTimeMotion', $datetime);
+                $eqLogic->save();
+                log::add(__CLASS__, 'debug', "New value");
+                $motionCmd = $eqLogic->getCmd(null, 'Motion');
+                $motionCmd->setCollectDate($datetime);
+                $motionCmd->event(1);
+            }
+        }
+
+        if($type == 'ding')
+        {
+
+        }
+
         //$eqLogic->setConfiguration('RingDoorbellHistoricalData', implode(PHP_EOL, $events));
         // event($value);
         // setCollectDate();
