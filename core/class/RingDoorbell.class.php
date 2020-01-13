@@ -130,14 +130,19 @@ class RingDoorbell extends eqLogic {
                 $events = array();
                 foreach ($splittedEvents as $event) {
                     $values = explode('||', $event);
-                    if($eqLogic->getLogicalId() == $values[0]) {
-                        RingDoorbell::updateInformation($eqLogic, $values[4], $values[2]);
+                    if($eqLogic->getLogicalId() == $values[0]) 
+                    {
                         $isAnwsered = $values[3] == "False" ? "0" : "1";
                         array_push($events, $values[4].'|'.$values[2].'|'.$isAnwsered);
                     }
                 }
 
-                $eqLogic->setConfiguration('RingDoorbellHistoricalData', implode(PHP_EOL, $events));
+                foreach (sort($events) as $event) 
+                {
+                    $values = explode('|', $event);
+                    RingDoorbell::updateInformation($eqLogic, $values[1], $values[0]);   
+                }
+
                 $eqLogic->save();
                 log::add(__CLASS__, 'debug', "Ring.com new persisted data: ". $eqLogic->getConfiguration('RingDoorbellHistoricalData'));   
                 $eqLogic->refreshWidget();
@@ -158,6 +163,9 @@ class RingDoorbell extends eqLogic {
 
     public static function updateInformation($eqLogic, $type, $datetime)
     {
+        //$eqLogic->setConfiguration('RingDoorbellHistoricalData', implode(PHP_EOL, $events));
+        // event($value);
+        // setCollectDate();
         log::add(__CLASS__, 'debug', "updateInformation ".$type." ".$datetime);
     }
 

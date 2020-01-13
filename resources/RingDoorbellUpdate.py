@@ -19,7 +19,7 @@ def main(argv):
    myring = Ring(auth)
    for doorbell in list(myring.doorbells):
         doorbell.update()
-        for event in doorbell.history(limit=10):
+        for event in doorbell.history(limit=20):
            print(str(doorbell.id)+'||'+str(event['id'])+'||'+str(event['kind'])+'||'+str(event['answered'])+'||'+str(event['created_at']))
 
 if __name__ == "__main__":
