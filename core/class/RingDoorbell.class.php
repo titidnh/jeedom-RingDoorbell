@@ -185,18 +185,15 @@ class RingDoorbell extends eqLogic {
 
             $historyDate = new DateTime($datetime, new DateTimeZone('UTC'));
             $historyDate->setTimezone($timeZone);
-            $cmd->setCollectDate(date_format($historyDate, 'Y-m-d H:i:s'));
-            $cmd->event(1);
-            // $cmd->addHistoryValue(1, date_format($historyDate, 'Y-m-d H:i:s'));
+            $cmd->addHistoryValue(1, date_format($historyDate, 'Y-m-d H:i:s'));
             $interval = new DateInterval('PT1S');
             $historyDate->add($interval);
-            $cmd->setCollectDate(date_format($historyDate, 'Y-m-d H:i:s'));
-            $cmd->event(0);
-            // $cmd->addHistoryValue(0, date_format($historyDate, 'Y-m-d H:i:s'));
+            $cmd->addHistoryValue(0, date_format($historyDate, 'Y-m-d H:i:s'));
+            $eqLogic->setStatus('lastCommunication', date('Y-m-d H:i:s'));
+            scenario::check($this);
+            listener::check($this->getId(), $value);
         }
 
-        // event($value);
-        // setCollectDate();
         log::add(__CLASS__, 'debug', "updateInformation ".$type." ".$datetime);
     }
 
