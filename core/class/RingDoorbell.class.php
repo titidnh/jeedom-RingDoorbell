@@ -139,19 +139,26 @@ class RingDoorbell extends eqLogic {
 
                 $dateSystem = new DateTime();
                 $timeZone = $dateSystem->getTimezone();
+                $dateSystem->setTimezone(new DateTimeZone('UTC'));
                 $latestDateEvent = $eqLogic->getConfiguration('LatestDateEvent');
+                log::add(__CLASS__, 'debug', "Old existing refresh LatestDateEvent: ".$latestDateEvent);
+                if($latestDateEvent != null && $latestDateEvent != '')
+                {
+                    $latestDateEvent = new DateTime($latestDateEvent, new DateTimeZone('UTC'));
+                }
 
                 sort($events);
                 foreach ($events as $event) 
                 {
                     $values = explode('|', $event);
-                    RingDoorbell::updateInformation($eqLogic, $values[1], $values[0], $timeZone, $latestDateEvent);   
+                    $historyDate = new DateTime($values[0], new DateTimeZone('UTC'));
+                    $historyDate->setTimezone($timeZone);
+                    RingDoorbell::updateInformation($eqLogic, $values[1], $historyDate, $timeZone, $latestDateEvent);   
                 }
 
-                $eqLogic->setConfiguration('LatestDateTimeMotion', $dateSystem);
+                log::add(__CLASS__, 'debug', "New existing refresh LatestDateEvent: ".$dateSystem);
+                $eqLogic->setConfiguration('LatestDateTimeMotion', date_format($dateSystem, 'Y-m-d H:i:s'));
                 $eqLogic->save();
-
-                log::add(__CLASS__, 'debug', "Ring.com new persisted data: ". $eqLogic->getConfiguration('RingDoorbellHistoricalData'));   
                 $eqLogic->refreshWidget();
             }
         }
@@ -170,7 +177,7 @@ class RingDoorbell extends eqLogic {
 
     public static function updateInformation($eqLogic, $type, $datetime, $timeZone, $latestDateEvent)
     {
-        if($datetime > $latestDateEvent)
+        if($latestDateEvent == null || $latestDateEvent == '' || $datetime > $latestDateEvent)
         {
             $cmd = null;
             if($type == 'motion')
@@ -185,8 +192,6 @@ class RingDoorbell extends eqLogic {
 
             if($cmd != null)
             {
-                $historyDate = new DateTime($datetime, new DateTimeZone('UTC'));
-                $historyDate->setTimezone($timeZone);
                 $cmd->addHistoryValue(1, date_format($historyDate, 'Y-m-d H:i:s'));
                 $interval = new DateInterval('PT1S');
                 $historyDate->add($interval);
