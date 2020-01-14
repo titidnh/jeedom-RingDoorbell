@@ -192,10 +192,9 @@ class RingDoorbell extends eqLogic {
                 $historyDate->add($interval);
                 $cmd->addHistoryValue(0, date_format($historyDate, 'Y-m-d H:i:s'));
                 $eqLogic->setStatus('lastCommunication', date('Y-m-d H:i:s'));
+                log::add(__CLASS__, 'debug', "updateInformation New Value: ".$type." ".$datetime);
             }
         }
-
-        log::add(__CLASS__, 'debug', "updateInformation ".$type." ".$datetime);
     }
 
     // public function toHtml($_version = 'dashboard') {
