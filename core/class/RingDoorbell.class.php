@@ -151,9 +151,10 @@ class RingDoorbell extends eqLogic {
                 foreach ($events as $event) 
                 {
                     $values = explode('|', $event);
+                    log::add(__CLASS__, 'debug', "Values : ".$values[0]);
                     $historyDate = new DateTime($values[0], new DateTimeZone('UTC'));
                     $historyDate->setTimezone($timeZone);
-                    RingDoorbell::updateInformation($eqLogic, $values[1], $historyDate, $timeZone, $latestDateEvent);   
+                    RingDoorbell::updateInformation($eqLogic, $values[1], $historyDate, $latestDateEvent);   
                 }
 
                 log::add(__CLASS__, 'debug', "New existing refresh LatestDateEvent: ".$dateSystem);
@@ -175,8 +176,9 @@ class RingDoorbell extends eqLogic {
         log::add(__CLASS__, 'debug', "Ring.com cron ended.");
     }
 
-    public static function updateInformation($eqLogic, $type, $datetime, $timeZone, $latestDateEvent)
+    public static function updateInformation($eqLogic, $type, $datetime, $latestDateEvent)
     {
+        log::add(__CLASS__, 'debug', "Values : ".$latestDateEvent." with ".$datetime);
         if($latestDateEvent == null || $latestDateEvent == '' || $datetime > $latestDateEvent)
         {
             $cmd = null;
@@ -197,7 +199,7 @@ class RingDoorbell extends eqLogic {
                 $datetime->add($interval);
                 $cmd->addHistoryValue(0, date_format($datetime, 'Y-m-d H:i:s'));
                 $eqLogic->setStatus('lastCommunication', date('Y-m-d H:i:s'));
-                log::add(__CLASS__, 'debug', "updateInformation New Value: ".$type." ".$datetime);
+datetime                log::add(__CLASS__, 'debug', "updateInformation New Value: ".$type." ".$datetime);
             }
         }
     }
