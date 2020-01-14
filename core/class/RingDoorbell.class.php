@@ -170,21 +170,21 @@ class RingDoorbell extends eqLogic {
 
     public static function updateInformation($eqLogic, $type, $datetime, $timeZone, $latestDateEvent)
     {
-        $cmd = null;
-        if($type == 'motion')
-        {
-            $cmd = $eqLogic->getCmd(null, 'Motion');
-        }
-
-        if($type == 'ding')
-        {
-            $cmd = $eqLogic->getCmd(null, 'Ring');
-        }
-
         if($datetime > $latestDateEvent)
         {
+            $cmd = null;
+            if($type == 'motion')
+            {
+                $cmd = $eqLogic->getCmd(null, 'Motion');
+            }
+    
+            if($type == 'ding')
+            {
+                $cmd = $eqLogic->getCmd(null, 'Ring');
+            }
+
             $historyDate = new DateTime($datetime, new DateTimeZone('UTC'));
-            $date->setTimezone($timeZone);
+            $historyDate->setTimezone($timeZone);
             $cmd->addHistoryValue(1, date_format($historyDate, 'Y-m-d H:i:s'));
             $interval = new DateInterval('PT1S');
             $historyDate->add($interval);
