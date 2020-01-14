@@ -62,23 +62,63 @@ class RingDoorbell extends eqLogic {
                     $eqLogic->save();
                 }
 
-                $refresh = $eqLogic->getCmd(null, 'Ding');
-                if (!is_object($refresh)) {
-                    $refresh = new RingDoorbellCmd();
-                    $refresh->setName(__('Ding', __FILE__));
+                $ringCmd = $eqLogic->getCmd(null, 'RingAction');
+                if (!is_object($ringCmd)) {
+                    $ringCmd = new RingDoorbellCmd();
+                    $ringCmd->setName(__('RingAction', __FILE__));
                 }
                 
-                $refresh->setEqLogic_id($eqLogic->getId());
-                $refresh->setLogicalId('Ding');
-                $refresh->setType('action');
-                $refresh->setSubType('other');
-                $refresh->save();
+                $ringCmd->setEqLogic_id($eqLogic->getId());
+                $ringCmd->setLogicalId('RingAction');
+                $ringCmd->setType('action');
+                $ringCmd->setSubType('other');
+                $ringCmd->setIsVisible(0);
+                $ringCmd->save();
+
+                $ringCmd = $eqLogic->getCmd(null, 'Ring');
+                if (!is_object($ringCmd)) {
+                    $ringCmd = new RingDoorbellCmd();
+                    $ringCmd->setName(__('Ring', __FILE__));
+                }
+                
+                $ringCmd->setEqLogic_id($eqLogic->getId());
+                $ringCmd->setLogicalId('Ring');
+                $ringCmd->setType('info');
+                $ringCmd->setSubType('binary');
+                $ringCmd->setIsHistorized(1);
+                $ringCmd->save();
+
+                $motionCmd = $eqLogic->getCmd(null, 'MotionAction');
+                if (!is_object($motionCmd)) {
+                    $motionCmd = new RingDoorbellCmd();
+                    $motionCmd->setName(__('MotionAction', __FILE__));
+                }
+                
+                $motionCmd->setEqLogic_id($eqLogic->getId());
+                $motionCmd->setLogicalId('MotionAction');
+                $motionCmd->setType('action');
+                $motionCmd->setSubType('other');
+                $motionCmd->setIsVisible(0);
+                $motionCmd->save();
+                
+                $motionCmd = $eqLogic->getCmd(null, 'Motion');
+                if (!is_object($motionCmd)) {
+                    $motionCmd = new RingDoorbellCmd();
+                    $motionCmd->setName(__('Motion', __FILE__));
+                }
+                
+                $motionCmd->setEqLogic_id($eqLogic->getId());
+                $motionCmd->setLogicalId('Motion');
+                $motionCmd->setType('info');
+                $motionCmd->setSubType('binary');
+                $motionCmd->setIsHistorized(1);
+                $motionCmd->save();
             }
         }
     }
 
-    public static function cron5() {
-        log::add(__CLASS__, 'debug', "Ring.com cron started.");
+    public static function refreshData() 
+    {
         $result = shell_exec('sudo -H python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellUpdate.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
         $splittedEvents = explode(PHP_EOL, $result);
 
@@ -90,36 +130,94 @@ class RingDoorbell extends eqLogic {
                 $events = array();
                 foreach ($splittedEvents as $event) {
                     $values = explode('||', $event);
-                    if($eqLogic->getLogicalId() == $values[0]) {
+                    if($eqLogic->getLogicalId() == $values[0]) 
+                    {
                         $isAnwsered = $values[3] == "False" ? "0" : "1";
                         array_push($events, $values[4].'|'.$values[2].'|'.$isAnwsered);
                     }
                 }
 
-                $eqLogic->setConfiguration('RingDoorbellHistoricalData', implode(PHP_EOL, $events));
+                $dateSystem = new DateTime();
+                $timeZone = $dateSystem->getTimezone();
+                $dateSystem->setTimezone(new DateTimeZone('UTC'));
+                $latestDateEvent = $eqLogic->getConfiguration('LatestDateEvent');
+                if($latestDateEvent != null && $latestDateEvent != '')
+                {
+                    $latestDateEvent = new DateTime($latestDateEvent, new DateTimeZone('UTC'));
+                }
+
+                sort($events);
+                foreach ($events as $event) 
+                {
+                    $values = explode('|', $event);
+                    log::add(__CLASS__, 'debug', "Values : ".$values[0]);
+                    $historyDate = new DateTime($values[0], new DateTimeZone('UTC'));
+                    $historyDate->setTimezone($timeZone);
+                    RingDoorbell::updateInformation($eqLogic, $values[1], $historyDate, $latestDateEvent);   
+                }
+
+                $eqLogic->setConfiguration('LatestDateEvent', date_format($dateSystem, 'Y-m-d H:i:s'));
                 $eqLogic->save();
-                log::add(__CLASS__, 'debug', "Ring.com new persisted data: ". $eqLogic->getConfiguration('RingDoorbellHistoricalData'));   
                 $eqLogic->refreshWidget();
             }
+        }
+    }
+
+    public static function cron15() 
+    {
+        log::add(__CLASS__, 'debug', "Ring.com cron started.");
+        if(config::byKey('useIFTT', 'RingDoorbell') != "1")
+        {
+            RingDoorbell::refreshData();
         }
 
         log::add(__CLASS__, 'debug', "Ring.com cron ended.");
     }
 
-    public function toHtml($_version = 'dashboard') {
-        $replace = $this->preToHtml($_version);
-        if (!is_array($replace)) {
-            log::add(__CLASS__, 'debug', 'Not array');
-            return $replace;
+    public static function updateInformation($eqLogic, $type, $datetime, $latestDateEvent)
+    {
+        if($latestDateEvent == null || $latestDateEvent == '' || $datetime > $latestDateEvent)
+        {
+            $cmd = null;
+            if($type == 'motion')
+            {
+                $cmd = $eqLogic->getCmd(null, 'Motion');
+            }
+    
+            if($type == 'ding')
+            {
+                $cmd = $eqLogic->getCmd(null, 'Ring');
+            }
+
+            if($cmd != null)
+            {
+                $cmd->addHistoryValue(1, date_format($datetime, 'Y-m-d H:i:s'));
+                $interval = new DateInterval('PT1S');
+                $datetime->add($interval);
+                $cmd->addHistoryValue(0, date_format($datetime, 'Y-m-d H:i:s'));
+                $eqLogic->setStatus('lastCommunication', date('Y-m-d H:i:s'));
+                log::add(__CLASS__, 'debug', "updateInformation New Value: ".$type." ".date_format($datetime, 'Y-m-d H:i:s'));
+            }
         }
-        $version = jeedom::versionAlias($_version);
-        $replace['#RingDoorbellHistoricalData#'] = $this->getConfiguration('RingDoorbellHistoricalData');
-     	$html = template_replace($replace, getTemplate('core', $version, 'eqlogic', 'RingDoorbell'));
-     	return $html;
-	}
+    }
+
+    // public function toHtml($_version = 'dashboard') {
+    //     $replace = $this->preToHtml($_version);
+    //     if (!is_array($replace)) {
+    //         log::add(__CLASS__, 'debug', 'Not array');
+    //         return $replace;
+    //     }
+    //     $version = jeedom::versionAlias($_version);
+    //     $replace['#RingDoorbellHistoricalData#'] = $this->getConfiguration('RingDoorbellHistoricalData');
+    //  	$html = template_replace($replace, getTemplate('core', $version, 'eqlogic', 'RingDoorbell'));
+    //  	return $html;
+	// }
 }
 
 class RingDoorbellCmd extends cmd {
     public function execute($_options = array()) {
+        if ($this->getLogicalId() == 'Ring' || $this->getLogicalId() == 'Motion') {
+            RingDoorbell::refreshData();
+        }
     }
 }
