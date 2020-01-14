@@ -141,7 +141,6 @@ class RingDoorbell extends eqLogic {
                 $timeZone = $dateSystem->getTimezone();
                 $dateSystem->setTimezone(new DateTimeZone('UTC'));
                 $latestDateEvent = $eqLogic->getConfiguration('LatestDateEvent');
-                log::add(__CLASS__, 'debug', "Old existing refresh LatestDateEvent: ".$latestDateEvent);
                 if($latestDateEvent != null && $latestDateEvent != '')
                 {
                     $latestDateEvent = new DateTime($latestDateEvent, new DateTimeZone('UTC'));
@@ -157,8 +156,7 @@ class RingDoorbell extends eqLogic {
                     RingDoorbell::updateInformation($eqLogic, $values[1], $historyDate, $latestDateEvent);   
                 }
 
-                log::add(__CLASS__, 'debug', "New existing refresh LatestDateEvent: ".$dateSystem);
-                $eqLogic->setConfiguration('LatestDateTimeMotion', date_format($dateSystem, 'Y-m-d H:i:s'));
+                $eqLogic->setConfiguration('LatestDateEvent', date_format($dateSystem, 'Y-m-d H:i:s'));
                 $eqLogic->save();
                 $eqLogic->refreshWidget();
             }
@@ -178,7 +176,6 @@ class RingDoorbell extends eqLogic {
 
     public static function updateInformation($eqLogic, $type, $datetime, $latestDateEvent)
     {
-        log::add(__CLASS__, 'debug', "Values : ".$latestDateEvent." with ".$datetime);
         if($latestDateEvent == null || $latestDateEvent == '' || $datetime > $latestDateEvent)
         {
             $cmd = null;
@@ -199,7 +196,7 @@ class RingDoorbell extends eqLogic {
                 $datetime->add($interval);
                 $cmd->addHistoryValue(0, date_format($datetime, 'Y-m-d H:i:s'));
                 $eqLogic->setStatus('lastCommunication', date('Y-m-d H:i:s'));
-datetime                log::add(__CLASS__, 'debug', "updateInformation New Value: ".$type." ".$datetime);
+                log::add(__CLASS__, 'debug', "updateInformation New Value: ".$type." ".date_format($datetime, 'Y-m-d H:i:s'));
             }
         }
     }
