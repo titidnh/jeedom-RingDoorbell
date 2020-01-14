@@ -185,10 +185,14 @@ class RingDoorbell extends eqLogic {
 
             $historyDate = new DateTime($datetime, new DateTimeZone('UTC'));
             $historyDate->setTimezone($timeZone);
-            $cmd->addHistoryValue(1, date_format($historyDate, 'Y-m-d H:i:s'));
+            $cmd->setCollectDate(date_format($historyDate, 'Y-m-d H:i:s'));
+            $cmd->event(1);
+            // $cmd->addHistoryValue(1, date_format($historyDate, 'Y-m-d H:i:s'));
             $interval = new DateInterval('PT1S');
             $historyDate->add($interval);
-            $cmd->addHistoryValue(0, date_format($historyDate, 'Y-m-d H:i:s'));
+            $cmd->setCollectDate(date_format($historyDate, 'Y-m-d H:i:s'));
+            $cmd->event(0);
+            // $cmd->addHistoryValue(0, date_format($historyDate, 'Y-m-d H:i:s'));
         }
 
         // event($value);
