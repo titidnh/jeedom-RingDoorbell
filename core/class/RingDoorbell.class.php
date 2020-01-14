@@ -183,15 +183,16 @@ class RingDoorbell extends eqLogic {
                 $cmd = $eqLogic->getCmd(null, 'Ring');
             }
 
-            $historyDate = new DateTime($datetime, new DateTimeZone('UTC'));
-            $historyDate->setTimezone($timeZone);
-            $cmd->addHistoryValue(1, date_format($historyDate, 'Y-m-d H:i:s'));
-            $interval = new DateInterval('PT1S');
-            $historyDate->add($interval);
-            $cmd->addHistoryValue(0, date_format($historyDate, 'Y-m-d H:i:s'));
-            $eqLogic->setStatus('lastCommunication', date('Y-m-d H:i:s'));
-            scenario::check($this);
-            listener::check($this->getId(), $value);
+            if($cmd != null)
+            {
+                $historyDate = new DateTime($datetime, new DateTimeZone('UTC'));
+                $historyDate->setTimezone($timeZone);
+                $cmd->addHistoryValue(1, date_format($historyDate, 'Y-m-d H:i:s'));
+                $interval = new DateInterval('PT1S');
+                $historyDate->add($interval);
+                $cmd->addHistoryValue(0, date_format($historyDate, 'Y-m-d H:i:s'));
+                $eqLogic->setStatus('lastCommunication', date('Y-m-d H:i:s'));
+            }
         }
 
         log::add(__CLASS__, 'debug', "updateInformation ".$type." ".$datetime);
