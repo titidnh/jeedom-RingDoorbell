@@ -137,14 +137,20 @@ class RingDoorbell extends eqLogic {
                     }
                 }
 
+                $dateSystem = new DateTime();
+                $timeZone = $dateSystem->getTimezone();
+                $latestDateEvent = $eqLogic->getConfiguration('LatestDateEvent');
+
                 sort($events);
                 foreach ($events as $event) 
                 {
                     $values = explode('|', $event);
-                    RingDoorbell::updateInformation($eqLogic, $values[1], $values[0]);   
+                    RingDoorbell::updateInformation($eqLogic, $values[1], $values[0], $timeZone, $latestDateEvent);   
                 }
 
+                $eqLogic->setConfiguration('LatestDateTimeMotion', $dateSystem);
                 $eqLogic->save();
+
                 log::add(__CLASS__, 'debug', "Ring.com new persisted data: ". $eqLogic->getConfiguration('RingDoorbellHistoricalData'));   
                 $eqLogic->refreshWidget();
             }
@@ -162,27 +168,29 @@ class RingDoorbell extends eqLogic {
         log::add(__CLASS__, 'debug', "Ring.com cron ended.");
     }
 
-    public static function updateInformation($eqLogic, $type, $datetime)
+    public static function updateInformation($eqLogic, $type, $datetime, $timeZone, $latestDateEvent)
     {
+        $cmd = null;
         if($type == 'motion')
         {
-            $latestDateTimeMotion = $eqLogic->getConfiguration('LatestDateTimeMotion');
-            if($datetime > $latestDateTimeMotion)
-            {
-                $eqLogic->setConfiguration('LatestDateTimeMotion', $datetime);
-                $eqLogic->save();
-                log::add(__CLASS__, 'debug', "New value");
-                $motionCmd = $eqLogic->getCmd(null, 'Motion');
-                $motionCmd->addHistoryValue(1, $datetime);
-            }
+            $cmd = $eqLogic->getCmd(null, 'Motion');
         }
 
         if($type == 'ding')
         {
-
+            $cmd = $eqLogic->getCmd(null, 'Ring');
         }
 
-        //$eqLogic->setConfiguration('RingDoorbellHistoricalData', implode(PHP_EOL, $events));
+        if($datetime > $latestDateEvent)
+        {
+            $historyDate = new DateTime($datetime, new DateTimeZone('UTC'));
+            $date->setTimezone($timeZone);
+            $cmd->addHistoryValue(1, date_format($historyDate, 'Y-m-d H:i:s'));
+            $interval = new DateInterval('PT1S');
+            $historyDate->add($interval);
+            $cmd->addHistoryValue(0, date_format($historyDate, 'Y-m-d H:i:s'));
+        }
+
         // event($value);
         // setCollectDate();
         log::add(__CLASS__, 'debug', "updateInformation ".$type." ".$datetime);
