@@ -168,13 +168,14 @@ class RingDoorbell extends eqLogic {
         log::add(__CLASS__, 'debug', "Ring.com cron started.");
         if(config::byKey('useIFTT', 'RingDoorbell') != "1")
         {
+            log::add(__CLASS__, 'debug', "Ring.com cron refreshData.");
             RingDoorbell::refreshData();
         }
 
         log::add(__CLASS__, 'debug', "Ring.com cron ended.");
     }
 
-    public static function updateInformation($eqLogic, $type, $datetime, $latestDateEvent)
+    private static function updateInformation($eqLogic, $type, $datetime, $latestDateEvent)
     {
         if($latestDateEvent == null || $latestDateEvent == '' || $datetime > $latestDateEvent)
         {
@@ -191,14 +192,17 @@ class RingDoorbell extends eqLogic {
 
             if($cmd != null)
             {
-                $cmd->addHistoryValue(1, date_format($datetime, 'Y-m-d H:i:s'));
-                $interval = new DateInterval('PT1S');
-                $datetime->add($interval);
-                $cmd->addHistoryValue(0, date_format($datetime, 'Y-m-d H:i:s'));
-                $eqLogic->setStatus('lastCommunication', date('Y-m-d H:i:s'));
-                log::add(__CLASS__, 'debug', "updateInformation New Value: ".$type." ".date_format($datetime, 'Y-m-d H:i:s'));
+                RingDoorbell::sendEvent($cmd, $datetime);
             }
         }
+    }
+
+    public static function sendEvent($cmd, $datetime)
+    {
+        $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
+        $interval = new DateInterval('PT1S');
+        $datetime->add($interval);
+        $cmd->event(0, date_format($datetime, 'Y-m-d H:i:s'));
     }
 
     // public function toHtml($_version = 'dashboard') {
@@ -216,8 +220,18 @@ class RingDoorbell extends eqLogic {
 
 class RingDoorbellCmd extends cmd {
     public function execute($_options = array()) {
-        if ($this->getLogicalId() == 'Ring' || $this->getLogicalId() == 'Motion') {
-            RingDoorbell::refreshData();
+        $eqLogic = $this->getEqLogic();
+        $dateSystem = new DateTime();
+        if ($this->getLogicalId() == 'RingAction')
+        {
+            $cmd = $eqLogic->getCmd(null, 'Ring');
+            RingDoorbell::sendEvent($cmd, $dateSystem);
+        } 
+        
+        if($this->getLogicalId() == 'MotionAction') 
+        {
+            $cmd = $eqLogic->getCmd(null, 'Motion');
+            RingDoorbell::sendEvent($cmd, $dateSystem);
         }
     }
 }
