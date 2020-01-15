@@ -175,7 +175,7 @@ class RingDoorbell extends eqLogic {
         log::add(__CLASS__, 'debug', "Ring.com cron ended.");
     }
 
-    public static function updateInformation($eqLogic, $type, $datetime, $latestDateEvent)
+    private static function updateInformation($eqLogic, $type, $datetime, $latestDateEvent)
     {
         if($latestDateEvent == null || $latestDateEvent == '' || $datetime > $latestDateEvent)
         {
@@ -197,7 +197,7 @@ class RingDoorbell extends eqLogic {
         }
     }
 
-    private static function sendEvent($cmd, $datetime)
+    public static function sendEvent($cmd, $datetime)
     {
         $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
         $interval = new DateInterval('PT1S');
