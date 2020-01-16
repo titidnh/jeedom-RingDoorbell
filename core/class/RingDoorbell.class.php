@@ -200,22 +200,11 @@ class RingDoorbell extends eqLogic {
     public static function sendEvent($cmd, $datetime)
     {
         $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
-        $interval = new DateInterval('PT1S');
+        $interval = new DateInterval('PT5S');
         $datetime->add($interval);
+	sleep(5);
         $cmd->event(0, date_format($datetime, 'Y-m-d H:i:s'));
     }
-
-    // public function toHtml($_version = 'dashboard') {
-    //     $replace = $this->preToHtml($_version);
-    //     if (!is_array($replace)) {
-    //         log::add(__CLASS__, 'debug', 'Not array');
-    //         return $replace;
-    //     }
-    //     $version = jeedom::versionAlias($_version);
-    //     $replace['#RingDoorbellHistoricalData#'] = $this->getConfiguration('RingDoorbellHistoricalData');
-    //  	$html = template_replace($replace, getTemplate('core', $version, 'eqlogic', 'RingDoorbell'));
-    //  	return $html;
-	// }
 }
 
 class RingDoorbellCmd extends cmd {
