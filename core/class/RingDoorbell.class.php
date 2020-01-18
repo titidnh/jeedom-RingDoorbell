@@ -121,7 +121,24 @@ class RingDoorbell extends eqLogic {
         }
     }
 
-    public static function refreshData() 
+    public static function cron10() 
+    {
+        log::add(__CLASS__, 'debug', "Ring.com cron started.");
+        if(config::byKey('useIFTT', 'RingDoorbell') != "1")
+        {
+            log::add(__CLASS__, 'debug', "Ring.com cron refreshData.");
+            RingDoorbell::refreshData();
+        }
+
+        log::add(__CLASS__, 'debug', "Ring.com cron ended.");
+    }
+
+    public static function sendEvent($cmd, $datetime)
+    {
+        $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
+    }
+
+    private static function refreshData() 
     {
         $result = shell_exec('sudo -H python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellUpdate.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
         $splittedEvents = explode(PHP_EOL, $result);
@@ -167,18 +184,6 @@ class RingDoorbell extends eqLogic {
         }
     }
 
-    public static function cron15() 
-    {
-        log::add(__CLASS__, 'debug', "Ring.com cron started.");
-        if(config::byKey('useIFTT', 'RingDoorbell') != "1")
-        {
-            log::add(__CLASS__, 'debug', "Ring.com cron refreshData.");
-            RingDoorbell::refreshData();
-        }
-
-        log::add(__CLASS__, 'debug', "Ring.com cron ended.");
-    }
-
     private static function updateInformation($eqLogic, $type, $datetime, $latestDateEvent)
     {
         if($latestDateEvent == null || $latestDateEvent == '' || $datetime > $latestDateEvent)
@@ -199,11 +204,6 @@ class RingDoorbell extends eqLogic {
                 RingDoorbell::sendEvent($cmd, $datetime);
             }
         }
-    }
-
-    public static function sendEvent($cmd, $datetime)
-    {
-        $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
     }
 }
 
