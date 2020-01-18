@@ -86,17 +86,8 @@ class RingDoorbell extends eqLogic {
                 $ringCmd->setType('info');
                 $ringCmd->setSubType('binary');
                 $ringCmd->setIsHistorized(1);
-                if(config::byKey('useIFTT', 'RingDoorbell') == "1")
-                {
-                    $ringCmd->setConfiguration('returnStateValue', 0);
-                    $ringCmd->setConfiguration('returnStateTime', 1);
-                }
-                else
-                {
-                    $ringCmd->setConfiguration('returnStateValue', '');
-                    $ringCmd->setConfiguration('returnStateTime', '');
-                }
-
+                $ringCmd->setConfiguration('returnStateValue', 0);
+                $ringCmd->setConfiguration('returnStateTime', 1);
                 $ringCmd->save();
 
                 $motionCmd = $eqLogic->getCmd(null, 'MotionAction');
@@ -123,17 +114,8 @@ class RingDoorbell extends eqLogic {
                 $motionCmd->setType('info');
                 $motionCmd->setSubType('binary');
                 $motionCmd->setIsHistorized(1);
-                if(config::byKey('useIFTT', 'RingDoorbell') == "1")
-                {
-                    $motionCmd->setConfiguration('returnStateValue', 0);
-                    $motionCmd->setConfiguration('returnStateTime', 1);
-                }
-                else
-                {
-                    $motionCmd->setConfiguration('returnStateValue', '');
-                    $motionCmd->setConfiguration('returnStateTime', '');
-                }
-                
+                $motionCmd->setConfiguration('returnStateValue', 0);
+                $motionCmd->setConfiguration('returnStateTime', 1);
                 $motionCmd->save();
             }
         }
@@ -192,7 +174,6 @@ class RingDoorbell extends eqLogic {
 
                 $eqLogic->setConfiguration('LatestDateEvent', date_format($dateSystem, 'Y-m-d H:i:s'));
                 $eqLogic->save();
-                //$eqLogic->refreshWidget();
             }
         }
     }
@@ -216,6 +197,7 @@ class RingDoorbell extends eqLogic {
             {
                 $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
                 $interval = new DateInterval('PT1M');
+                $datetime->add($interval);
                 $cmd->event(0, date_format($datetime, 'Y-m-d H:i:s'));
             }
         }
