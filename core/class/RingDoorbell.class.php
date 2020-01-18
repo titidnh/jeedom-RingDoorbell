@@ -86,8 +86,17 @@ class RingDoorbell extends eqLogic {
                 $ringCmd->setType('info');
                 $ringCmd->setSubType('binary');
                 $ringCmd->setIsHistorized(1);
-                $ringCmd->setConfiguration('returnStateValue', 0);
-                $ringCmd->setConfiguration('returnStateTime', 1);
+                if(config::byKey('useIFTT', 'RingDoorbell') == "1")
+                {
+                    $ringCmd->setConfiguration('returnStateValue', 0);
+                    $ringCmd->setConfiguration('returnStateTime', 1);
+                }
+                else
+                {
+                    $ringCmd->setConfiguration('returnStateValue', '');
+                    $ringCmd->setConfiguration('returnStateTime', '');
+                }
+                
                 $ringCmd->save();
 
                 $motionCmd = $eqLogic->getCmd(null, 'MotionAction');
@@ -114,8 +123,17 @@ class RingDoorbell extends eqLogic {
                 $motionCmd->setType('info');
                 $motionCmd->setSubType('binary');
                 $motionCmd->setIsHistorized(1);
-                $motionCmd->setConfiguration('returnStateValue', 0);
-                $motionCmd->setConfiguration('returnStateTime', 1);
+                if(config::byKey('useIFTT', 'RingDoorbell') == "1")
+                {
+                    $motionCmd->setConfiguration('returnStateValue', 0);
+                    $motionCmd->setConfiguration('returnStateTime', 1);
+                }
+                else
+                {
+                    $motionCmd->setConfiguration('returnStateValue', '');
+                    $motionCmd->setConfiguration('returnStateTime', '');
+                }
+                
                 $motionCmd->save();
             }
         }
