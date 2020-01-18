@@ -96,7 +96,7 @@ class RingDoorbell extends eqLogic {
                     $ringCmd->setConfiguration('returnStateValue', '');
                     $ringCmd->setConfiguration('returnStateTime', '');
                 }
-                
+
                 $ringCmd->save();
 
                 $motionCmd = $eqLogic->getCmd(null, 'MotionAction');
@@ -216,7 +216,7 @@ class RingDoorbell extends eqLogic {
             {
                 $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
                 $interval = new DateInterval('PT1M');
-                $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
+                $cmd->event(0, date_format($datetime, 'Y-m-d H:i:s'));
             }
         }
     }
