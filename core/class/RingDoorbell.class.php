@@ -133,11 +133,6 @@ class RingDoorbell extends eqLogic {
         log::add(__CLASS__, 'debug', "Ring.com cron ended.");
     }
 
-    public static function sendEvent($cmd, $datetime)
-    {
-        $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
-    }
-
     public static function refreshData() 
     {
         $result = shell_exec('sudo -H python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellUpdate.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
@@ -179,7 +174,7 @@ class RingDoorbell extends eqLogic {
 
                 $eqLogic->setConfiguration('LatestDateEvent', date_format($dateSystem, 'Y-m-d H:i:s'));
                 $eqLogic->save();
-                $eqLogic->refreshWidget();
+                //$eqLogic->refreshWidget();
             }
         }
     }
@@ -201,7 +196,9 @@ class RingDoorbell extends eqLogic {
 
             if($cmd != null)
             {
-                RingDoorbell::sendEvent($cmd, $datetime);
+                $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
+                $interval = new DateInterval('PT1M');
+                $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
             }
         }
     }
@@ -214,13 +211,13 @@ class RingDoorbellCmd extends cmd {
         if ($this->getLogicalId() == 'RingAction')
         {
             $cmd = $eqLogic->getCmd(null, 'Ring');
-            RingDoorbell::sendEvent($cmd, $dateSystem);
+            $cmd->event(1, date_format($dateSystem, 'Y-m-d H:i:s'));
         } 
         
         if($this->getLogicalId() == 'MotionAction') 
         {
             $cmd = $eqLogic->getCmd(null, 'Motion');
-            RingDoorbell::sendEvent($cmd, $dateSystem);
+            $cmd->event(1, date_format($dateSystem, 'Y-m-d H:i:s'));
         }
     }
 }
