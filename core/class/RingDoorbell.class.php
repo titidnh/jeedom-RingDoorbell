@@ -138,7 +138,7 @@ class RingDoorbell extends eqLogic {
         $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
     }
 
-    private static function refreshData() 
+    public static function refreshData() 
     {
         $result = shell_exec('sudo -H python3 '.dirname(__FILE__) . '/../../resources/RingDoorbellUpdate.py -u '. config::byKey('username', 'RingDoorbell') .' -p \''. config::byKey('password', 'RingDoorbell').'\'');
         $splittedEvents = explode(PHP_EOL, $result);
