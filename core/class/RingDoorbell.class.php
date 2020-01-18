@@ -86,6 +86,8 @@ class RingDoorbell extends eqLogic {
                 $ringCmd->setType('info');
                 $ringCmd->setSubType('binary');
                 $ringCmd->setIsHistorized(1);
+                $ringCmd->setConfiguration('returnStateValue', 0);
+                $ringCmd->setConfiguration('returnStateTime', 1);
                 $ringCmd->save();
 
                 $motionCmd = $eqLogic->getCmd(null, 'MotionAction');
@@ -112,9 +114,23 @@ class RingDoorbell extends eqLogic {
                 $motionCmd->setType('info');
                 $motionCmd->setSubType('binary');
                 $motionCmd->setIsHistorized(1);
+                $motionCmd->setConfiguration('returnStateValue', 0);
+                $motionCmd->setConfiguration('returnStateTime', 1);
                 $motionCmd->save();
             }
         }
+    }
+
+    public static function cron10() 
+    {
+        log::add(__CLASS__, 'debug', "Ring.com cron started.");
+        if(config::byKey('useIFTT', 'RingDoorbell') != "1")
+        {
+            log::add(__CLASS__, 'debug', "Ring.com cron refreshData.");
+            RingDoorbell::refreshData();
+        }
+
+        log::add(__CLASS__, 'debug', "Ring.com cron ended.");
     }
 
     public static function refreshData() 
@@ -158,21 +174,8 @@ class RingDoorbell extends eqLogic {
 
                 $eqLogic->setConfiguration('LatestDateEvent', date_format($dateSystem, 'Y-m-d H:i:s'));
                 $eqLogic->save();
-                $eqLogic->refreshWidget();
             }
         }
-    }
-
-    public static function cron15() 
-    {
-        log::add(__CLASS__, 'debug', "Ring.com cron started.");
-        if(config::byKey('useIFTT', 'RingDoorbell') != "1")
-        {
-            log::add(__CLASS__, 'debug', "Ring.com cron refreshData.");
-            RingDoorbell::refreshData();
-        }
-
-        log::add(__CLASS__, 'debug', "Ring.com cron ended.");
     }
 
     private static function updateInformation($eqLogic, $type, $datetime, $latestDateEvent)
@@ -192,18 +195,12 @@ class RingDoorbell extends eqLogic {
 
             if($cmd != null)
             {
-                RingDoorbell::sendEvent($cmd, $datetime);
+                $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
+                $interval = new DateInterval('PT1M');
+                $datetime->add($interval);
+                $cmd->event(0, date_format($datetime, 'Y-m-d H:i:s'));
             }
         }
-    }
-
-    public static function sendEvent($cmd, $datetime)
-    {
-        $cmd->event(1, date_format($datetime, 'Y-m-d H:i:s'));
-        $interval = new DateInterval('PT5S');
-        $datetime->add($interval);
-	sleep(5);
-        $cmd->event(0, date_format($datetime, 'Y-m-d H:i:s'));
     }
 }
 
@@ -214,13 +211,13 @@ class RingDoorbellCmd extends cmd {
         if ($this->getLogicalId() == 'RingAction')
         {
             $cmd = $eqLogic->getCmd(null, 'Ring');
-            RingDoorbell::sendEvent($cmd, $dateSystem);
+            $cmd->event(1, date_format($dateSystem, 'Y-m-d H:i:s'));
         } 
         
         if($this->getLogicalId() == 'MotionAction') 
         {
             $cmd = $eqLogic->getCmd(null, 'Motion');
-            RingDoorbell::sendEvent($cmd, $dateSystem);
+            $cmd->event(1, date_format($dateSystem, 'Y-m-d H:i:s'));
         }
     }
 }
